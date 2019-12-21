@@ -6,28 +6,22 @@ import {HttpResponseModel} from "../models/http-response.model";
 
 export class UserController {
     private userService: UserService;
+    private httpResponse: HttpResponseModel = new HttpResponseModel();
     constructor() {
         this.userService = new UserService();
     }
 
-    async register(req: Request, res: Response) {
+     register = async (req: Request, res: Response) => {
         const validate = validationResult(req);
-        let msg: string = '';
+        this.httpResponse.res = res;
+         let msg: string = this.httpResponse.getError(validate);
         let success: boolean = false;
         let data = {};
-        if (!validate.isEmpty()) {
-            const errors = Object.values(validate.mapped());
-            errors.forEach(item => {
-                msg += `${item.msg}. `;
-            });
-
-            res.json({
-                success,
-                data,
-                msg
-            });
+        if(msg) {
+            this.httpResponse.setResponse(success, data, msg);
             return;
         }
+
 
         try {
             const body = req.body;
@@ -39,12 +33,8 @@ export class UserController {
             msg = e;
         }
 
-        res.json({
-            success,
-            data,
-            msg
-        });
-    }
+        return this.httpResponse.setResponse(success, data, msg);
+    };
 
     public login(req: Request, res: Response) {
         res.status(200)

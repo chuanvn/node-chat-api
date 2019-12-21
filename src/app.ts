@@ -1,7 +1,6 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
-import * as mongoose from 'mongoose';
-import * as bluebird from 'bluebird';
+import {connect} from 'mongoose';
 import {CommonRoute} from "./routes/common.route";
 
 
@@ -24,9 +23,8 @@ class App {
         this.app.use(bodyParser.urlencoded({extended: false}))
     }
 
-    private setupDb(): void {
-        mongoose.Promise = bluebird;
-        mongoose.connect(this.urlDb, {
+    private async setupDb() {
+        await connect(this.urlDb, {
             useUnifiedTopology: true,
             useNewUrlParser: true
         });

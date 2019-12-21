@@ -13,7 +13,7 @@ export class UserValidation {
                 .isLength({min: 6}),
             check('confirm_password', USER_MSG_0004)
                 .custom((value, {req}) => {
-                    return value === req.body.confirm_password
+                    return value === req.body.password
                 })
         ];
     }
